@@ -8,7 +8,8 @@ const signInUser = async (req: Request, res: Response) => {
 
         const newUser = await authService.signInUser(body);
 
-        return res.status(201).json(newUser);
+        res.status(201).json(newUser);
+        return 
 
 
     } catch (error: Error | any) {
@@ -23,8 +24,8 @@ const loginUser = async (req: Request, res: Response) => {
 
         const user = await authService.loginUser(email, password);
 
-        return res.status(200).json(user);
-
+        res.status(200).json(user);
+        return
 
     } catch (error: Error | any) {
         res.status(error?.code ?? 500).json({ message: error?.message ?? "Internal server error" });
