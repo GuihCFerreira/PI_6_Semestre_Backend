@@ -42,11 +42,11 @@ const loginUser = async (email: string, password: string) => {
 
     if (!isPasswordValid) throw new Unauthorized("Invalid password!");
 
-    const { password: _, ...userWithoutPassword } = user;
+    const loggedUser = await authRepository.loginUser(email, user.password);
     const token = await generateToken(user.id);
 
     return {
-        ...userWithoutPassword,
+        ...loggedUser,
         token,
     }
 

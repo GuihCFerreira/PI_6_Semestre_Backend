@@ -4,6 +4,12 @@ import { db } from "../database/prisma";
 const signInUser = async (user: User) => {
   return db.user.create({
     data: user,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      photo: true,
+    }
   });
 };
 
@@ -24,6 +30,12 @@ const loginUser = async (email: string, password: string) => {
     data: {
       last_login: new Date(),
     },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      photo: true,
+    }
   });
 };
 
