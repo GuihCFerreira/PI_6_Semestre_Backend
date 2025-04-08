@@ -17,3 +17,35 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
 }
+
+model Questions {
+  id         String       @id @default(cuid())
+  question   String
+  options    Answers[]
+  required   Boolean
+  tag        QuestionsTag
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+}
+
+model Answers {
+  id          String    @id @default(cuid())
+  question_id String
+  answer      String
+  value       String
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  question    Questions @relation(fields: [question_id], references: [id])
+}
+
+enum QuestionsTag {
+  FAVORITE_GAMES
+  GENRES
+  CATEGORIES
+  OPERATIONAL_SYSTEMS
+  GAME_LANGUAGE
+  PUBLISHERS
+  MODE
+  STYLE
+  CAMERA
+}
