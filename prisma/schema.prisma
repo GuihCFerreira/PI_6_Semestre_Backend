@@ -38,6 +38,22 @@ model Answers {
   question    Questions @relation(fields: [question_id], references: [id])
 }
 
+model Quizzes {
+  id                  String   @id @default(cuid())
+  user_id             String
+  favorite_games      String[]
+  genres              String[]
+  categories          String[]
+  operational_systems String[]
+  game_language       String
+  publishers          String[]
+  game_modes          String[]
+  game_styles         String[]
+  camera_perspective  String[]
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+}
+
 enum QuestionsTag {
   FAVORITE_GAMES
   GENRES
