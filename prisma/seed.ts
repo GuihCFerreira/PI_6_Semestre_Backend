@@ -90,7 +90,7 @@ async function main() {
             { answer: "3D", question_id: cameraQuestions.id, value: "3D | 3D Platformer | 3D Fighter" },
             { answer: "VR", question_id: cameraQuestions.id, value: "VR" },
             { answer: "Qualquer uma", question_id: cameraQuestions.id, value: "" },
-            { answer: "Realistas", question_id: styleQuestions.id, value: "Realistic | Photorealistic | 3D | Cinematic| Beautiful" },
+            { answer: "Realistas", question_id: styleQuestions.id, value: "Realistic | Photorealistic | 3D | Cinematic | Beautiful" },
             { answer: "Pixelados / Retrô", question_id: styleQuestions.id, value: "Pixel Graphics | Retro | Old School | 2D | 2.5D" },
             { answer: "Estilizados / Cartunescos", question_id: styleQuestions.id, value: "Stylized | Cartoony | Colorful | Anime | Hand-drawn | Comic Book" },
             { answer: "Minimalista", question_id: styleQuestions.id, value: "Minimalist | Abstract | Voxel | Low Poly" },
