@@ -2,7 +2,7 @@ import { Router } from "express";
 import { authRouter } from "./auth-routes";
 import { userRouter } from "./user-routes";
 import { validateToken } from "../middleware/validate-token";
-import { quizRouter } from "./quiz-router";
+import { quizRouter } from "./quiz-routes";
 import { notFoundRoute } from "../middleware/not-found-route";
 
 const router: Router = Router();
