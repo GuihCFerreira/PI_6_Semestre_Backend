@@ -58,7 +58,7 @@ model Quizzes {
 
 model GameSuggested {
   id                  String   @id @default(cuid())
-  game_id             String
+  game_id             Int
   quiz_id             String
   quiz                Quizzes  @relation(fields: [quiz_id], references: [id])
   name                String
@@ -72,7 +72,7 @@ model FavoriteGames {
   id                  String   @id @default(cuid())
   user_id             String
   user                User     @relation(fields: [user_id], references: [id])
-  game_id             String
+  game_id             Int
   name                String
   short_description   String
   header_image        String
