@@ -16,6 +16,7 @@ model User {
   last_login DateTime? @default(now())
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
+  FavoriteGames FavoriteGames[]
 }
 
 model Questions {
@@ -69,6 +70,8 @@ model GameSuggested {
 
 model FavoriteGames {
   id                  String   @id @default(cuid())
+  user_id             String
+  user                User     @relation(fields: [user_id], references: [id])
   game_id             String
   name                String
   short_description   String
