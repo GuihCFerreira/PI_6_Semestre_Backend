@@ -54,6 +54,16 @@ model Quizzes {
   updated_at          DateTime @updatedAt
 }
 
+model FavoriteGames {
+  id                  String   @id @default(cuid())
+  game_id             String
+  name                String
+  short_description   String
+  header_image        String
+  release_date        DateTime
+  favorited_at        DateTime @default(now())
+}
+
 enum QuestionsTag {
   FAVORITE_GAMES
   GENRES
