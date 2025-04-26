@@ -16,6 +16,7 @@ model User {
   last_login DateTime? @default(now())
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
+  FavoriteGames FavoriteGames[]
 }
 
 model Questions {
@@ -52,6 +53,31 @@ model Quizzes {
   camera_perspective  String[]
   created_at          DateTime @default(now())
   updated_at          DateTime @updatedAt
+  GameSuggested       GameSuggested[]
+}
+
+model GameSuggested {
+  id                  String   @id @default(cuid())
+  game_id             String
+  quiz_id             String
+  quiz                Quizzes  @relation(fields: [quiz_id], references: [id])
+  name                String
+  short_description   String
+  header_image        String
+  release_date        DateTime
+  suggested_at        DateTime @default(now())
+}
+
+model FavoriteGames {
+  id                  String   @id @default(cuid())
+  user_id             String
+  user                User     @relation(fields: [user_id], references: [id])
+  game_id             String
+  name                String
+  short_description   String
+  header_image        String
+  release_date        DateTime
+  favorited_at        DateTime @default(now())
 }
 
 enum QuestionsTag {
