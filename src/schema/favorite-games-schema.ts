@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const addFavoriteGameSchema = z.object({
-    game_id: z.string().uuid(),
+    game_id: z.number().int().positive(),
     name: z.string().min(1).max(100),
     short_description: z.string().min(1).max(500),
     header_image: z.string().url(),
