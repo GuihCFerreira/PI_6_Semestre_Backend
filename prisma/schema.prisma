@@ -17,6 +17,7 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   FavoriteGames FavoriteGames[]
+  PlayLaterGames PlayLaterGames[]
 }
 
 model Questions {
@@ -78,6 +79,18 @@ model FavoriteGames {
   header_image        String
   release_date        DateTime
   favorited_at        DateTime @default(now())
+}
+
+model PlayLaterGames {
+  id                  String   @id @default(cuid())
+  user_id             String
+  user                User     @relation(fields: [user_id], references: [id])
+  game_id             Int
+  name                String
+  short_description   String
+  header_image        String
+  release_date        DateTime
+  added_at            DateTime @default(now())
 }
 
 enum QuestionsTag {
