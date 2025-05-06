@@ -17,6 +17,15 @@ const getPlayLaterGameById = async (id: string) => {
     })
 }
 
+const getPlayLaterGameByGameIdAndUserId = async (gameId: number, userId: string) => {
+    return db.playLaterGames.findFirst({
+        where: {
+            game_id: gameId,
+            user_id: userId,
+        }
+    })
+}
+
 const addPlayLaterGame = async (data: PlayLaterGames) => {
     return db.playLaterGames.create({
         data
@@ -34,6 +43,7 @@ const deletePlayLaterGame = async (id: string) => {
 export default {
     getAllPlayLaterGames,
     getPlayLaterGameById,
+    getPlayLaterGameByGameIdAndUserId,
     addPlayLaterGame,
     deletePlayLaterGame
 }
