@@ -21,6 +21,15 @@ const getPlayLaterGameById = async (id: string) => {
 
 }
 
+const getPlayLaterGameByGameIdAndUserId = async (gameId: number, userId: string) => {
+
+    const user = await userRepository.getUserById(userId)
+    if (!user) throw new NotFound("User not found")
+
+    return playLaterGamesRepository.getPlayLaterGameByGameIdAndUserId(gameId, userId)
+
+}
+
 const addPlayLaterGame = async (data: PlayLaterGames, userId: string) => {
 
     const user = await userRepository.getUserById(userId)
@@ -44,6 +53,7 @@ const removePlayLaterGame = async (id: string) => {
 export default {
     getAllPlayLaterGames,
     getPlayLaterGameById,
+    getPlayLaterGameByGameIdAndUserId,
     addPlayLaterGame,
     removePlayLaterGame
 }
