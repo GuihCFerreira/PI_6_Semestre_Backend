@@ -57,7 +57,7 @@ const deleteGameSuggested = async (req: Request, res: Response) => {
         }
 
         await gameSuggestedService.deleteGameSuggested(id);
-        res.status(204);
+        res.status(204).send();
         return;
 
     } catch (error: Error | any) {
@@ -75,7 +75,7 @@ const deleteAllGameSuggestedByQuizId = async (req: Request, res: Response) => {
         }
 
         await gameSuggestedService.deleteAllGameSuggestedByQuizId(id);
-        res.status(204);
+        res.status(204).send();
         return;
 
     } catch (error: Error | any) {

@@ -2,7 +2,7 @@ import { release } from "os";
 import { z } from "zod";
 
 const createGameSuggestedSchema = z.object({
-    quiz_id: z.string().uuid(),
+    quiz_id: z.string().cuid(),
     game_id: z.number().int().positive(),
     name: z.string().min(1).max(100),
     short_description: z.string().min(1).max(500),
