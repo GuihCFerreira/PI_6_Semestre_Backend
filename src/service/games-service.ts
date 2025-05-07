@@ -1,0 +1,40 @@
+import { NotFound } from "../error/not-found-error"
+import gamesRepository from "../repository/games-repository"
+import gameSuggestedService from "./game-suggested-service"
+import quizService from "./quiz-service"
+
+const getGameById = async (id: number) => {
+
+    const game = await gamesRepository.getGameById(id)
+    if (!game) throw new NotFound("Game not found")
+
+    return game
+
+}
+
+const getGameRecomendations = async (userId: string) => {
+
+    const lastQuiz = await quizService.getLastUserQuiz(userId)
+    if (!lastQuiz) throw new NotFound("No quiz found for this user")
+
+    const getGameSuggested = await gameSuggestedService.getAllGameSuggestedByQuizId(lastQuiz.id)
+    const games = getGameSuggested.length > 0 ? getGameSuggested.map((game) => game.game_id) : [] 
+
+    const { id, user_id, created_at, updated_at, ...lastQuizCleaned } = lastQuiz;
+    
+    const searchData = {
+        suggested_games_ids: games,
+        ...lastQuizCleaned
+    }
+
+    const recomendations = await gamesRepository.getGameRecomendations(searchData)
+    if (!recomendations) throw new NotFound("No recomendations found")
+
+    return recomendations
+
+}
+
+export default {
+    getGameById,
+    getGameRecomendations
+}
