@@ -17,6 +17,7 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   FavoriteGames FavoriteGames[]
+  PlayLaterGames PlayLaterGames[]
 }
 
 model Questions {
@@ -58,13 +59,13 @@ model Quizzes {
 
 model GameSuggested {
   id                  String   @id @default(cuid())
-  game_id             String
+  game_id             Int
   quiz_id             String
   quiz                Quizzes  @relation(fields: [quiz_id], references: [id])
   name                String
   short_description   String
   header_image        String
-  release_date        DateTime
+  release_date        String
   suggested_at        DateTime @default(now())
 }
 
@@ -72,12 +73,24 @@ model FavoriteGames {
   id                  String   @id @default(cuid())
   user_id             String
   user                User     @relation(fields: [user_id], references: [id])
-  game_id             String
+  game_id             Int
   name                String
   short_description   String
   header_image        String
-  release_date        DateTime
+  release_date        String
   favorited_at        DateTime @default(now())
+}
+
+model PlayLaterGames {
+  id                  String   @id @default(cuid())
+  user_id             String
+  user                User     @relation(fields: [user_id], references: [id])
+  game_id             Int
+  name                String
+  short_description   String
+  header_image        String
+  release_date        String
+  added_at            DateTime @default(now())
 }
 
 enum QuestionsTag {
