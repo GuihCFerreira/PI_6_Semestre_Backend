@@ -13,6 +13,7 @@ model User {
   name       String
   password   String
   photo      String?
+  photo_id       String?
   last_login DateTime? @default(now())
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
