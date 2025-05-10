@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import cors from "cors";
 import { connectToDatabase } from "./database";
 import { router } from "./routes";
+import connectToCloudinary from "./storage/cloudinary";
 
 config();
 
@@ -18,4 +19,5 @@ const port: string = process.env.PORT || "3000";
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   connectToDatabase();
+  connectToCloudinary();
 });
