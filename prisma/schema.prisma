@@ -26,9 +26,11 @@ model Questions {
   id         String       @id @default(cuid())
   question   String
   required   Boolean
+  min_length Int
   created_at DateTime     @default(now())
   updated_at DateTime     @updatedAt
   tag        QuestionsTag
+  type       QuestionsType
   options    Answers[]
 }
 
@@ -137,4 +139,10 @@ enum QuestionsTag {
   MODE
   STYLE
   CAMERA
+}
+
+enum QuestionsType {
+  SINGLE_CHOICE
+  MULTIPLE_CHECKBOX
+  INPUT_CHECKBOX
 }
