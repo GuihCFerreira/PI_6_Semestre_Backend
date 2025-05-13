@@ -1,6 +1,15 @@
 import { PrismaClient, QuestionsTag } from "@prisma/client";
+import fs from 'fs';
+import path from 'path';
+import csv from 'csv-parser';
 
 const prisma = new PrismaClient();
+
+function parseStringArray(field: string): string[] {
+  if (!field || typeof field !== 'string') return [];
+  const matches = field.match(/(['"])(.*?)\1/g);
+  return matches ? matches.map(s => s.slice(1, -1)) : [];
+}
 
 async function main() {
     try {
@@ -192,6 +201,47 @@ async function main() {
         ];
 
         await prisma.answers.createMany({ data: aswersData });
+
+        const filePath = path.join(__dirname, './games.csv');
+        const BATCH_SIZE = 1000;
+        const results: any[] = [];
+
+        console.time('Importação de games via CSV');
+
+        fs.createReadStream(filePath)
+            .pipe(csv())
+            .on('data', (data) => results.push(data))
+            .on('end', async () => {
+                for (let i = 0; i < results.length; i += BATCH_SIZE) {
+                    const batch = results.slice(i, i + BATCH_SIZE).map(game => ({
+                        game_id: parseInt(game.appid),
+                        name: game.name,
+                        short_description: game.short_description,
+                        about_the_game: game.about_the_game,
+                        header_image: game.header_image,
+                        release_date: game.release_date,
+                        supported_languages: parseStringArray(game.supported_languages),
+                        full_audio_languages: parseStringArray(game.full_audio_languages),
+                        publishers: parseStringArray(game.publishers),
+                        categories: parseStringArray(game.categories),
+                        genres: parseStringArray(game.genres),
+                        screenshots: parseStringArray(game.screenshots),
+                        tags: parseStringArray(game.tags),
+                        operational_systems: parseStringArray(game.operational_systems),
+                    }));
+
+                    try {
+                        await prisma.games.createMany({
+                            data: batch,
+                            skipDuplicates: true,
+                        });
+                        console.log(`Lote inserido: ${i} até ${i + batch.length}`);
+                    } catch (error) {
+                        console.error(`Erro no lote ${i} - ${i + batch.length}`, error);
+                    }
+                }
+                console.timeEnd('Importação de games via CSV');
+            })
 
     } catch (error) {
         console.error("Error seeding database:", error);

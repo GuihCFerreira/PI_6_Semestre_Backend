@@ -109,6 +109,24 @@ model GamesPlayed {
   user              User     @relation(fields: [user_id], references: [id])
 }
 
+model Games {
+  id                   String   @id @default(cuid())
+  game_id              Int      @unique
+  name                 String
+  short_description    String
+  about_the_game       String
+  header_image         String
+  release_date         String
+  supported_languages  String[]
+  full_audio_languages String[]
+  publishers           String[]
+  categories           String[]
+  genres               String[]
+  screenshots          String[]
+  tags                 String[]
+  operational_systems  String[]
+}
+
 enum QuestionsTag {
   FAVORITE_GAMES
   GENRES
