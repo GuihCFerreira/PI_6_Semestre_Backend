@@ -47,7 +47,7 @@ model Answers {
 model Quizzes {
   id                  String          @id @default(cuid())
   user_id             String
-  favorite_games      String[]
+  favorite_games      Int[]
   genres              String[]
   categories          String[]
   operational_systems String[]
