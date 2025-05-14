@@ -1,5 +1,6 @@
 import { NotFound } from "../error/not-found-error"
 import gamesRepository from "../repository/games-repository"
+import { Pagination } from "../types/paginator"
 import gameSuggestedService from "./game-suggested-service"
 import quizService from "./quiz-service"
 
@@ -40,7 +41,7 @@ const getAllGames = async (page: number = 1, perPage: number = 20) => {
     const total = await gamesRepository.getGamesTotal();
     const totalPages = Math.ceil(total / perPage);
     
-    const pagination = {
+    const pagination: Pagination = {
         currentPage: page,
         perPage,
         total,
@@ -54,7 +55,7 @@ const getAllGames = async (page: number = 1, perPage: number = 20) => {
         data,
         pagination
     };
-    
+
 }
 
 const getGamesForQuizTemplate = async () => {
