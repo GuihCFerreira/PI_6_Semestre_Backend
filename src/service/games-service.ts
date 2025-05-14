@@ -34,7 +34,41 @@ const getGameRecomendations = async (userId: string) => {
 
 }
 
+const getAllGames = async (page: number = 1, perPage: number = 20) => {
+
+    const data = await gamesRepository.getAllGamesPaginate(page, perPage);
+    const total = await gamesRepository.getGamesTotal();
+    const totalPages = Math.ceil(total / perPage);
+    
+    const pagination = {
+        currentPage: page,
+        perPage,
+        total,
+        lastPage: totalPages,
+        firstPage: 1,
+        nextPage: page < totalPages ? page + 1 : null,
+        previousPage: page > 1 ? page - 1 : null,
+    }
+
+    return {
+        data,
+        pagination
+    };
+    
+}
+
+const getGamesForQuizTemplate = async () => {
+    const games = await gamesRepository.getAllGames();
+    return games.map((game) => ({
+        "answer": "Windows",
+        "value": "windows",
+        image: game.header_image
+    }))
+}
+
 export default {
     getGameById,
-    getGameRecomendations
+    getGameRecomendations,
+    getAllGames,
+    getGamesForQuizTemplate
 }

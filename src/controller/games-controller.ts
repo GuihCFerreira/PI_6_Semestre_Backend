@@ -41,7 +41,38 @@ const getGameRecomendations = async (req: AuthenticatedRequest, res: Response) =
     }
 }
 
+const getAllGames = async (req: Request, res: Response) => {
+    try {
+
+        const { page = "1", perPage = "20" } = req.query;
+        
+        const games = await gamesService.getAllGames(parseInt(page as string, 10), parseInt(perPage as string, 10));
+
+        res.status(200).json(games);
+        return;
+
+    }
+    catch (error: Error | any) {
+        res.status(error?.code ?? 500).json({ message: error?.message ?? "Internal server error" });
+    }
+}
+
+const getGamesForQuizTemplate = async (req: Request, res: Response) => {
+    try {
+        const games = await gamesService.getGamesForQuizTemplate();
+
+        res.status(200).json(games);
+        return;
+
+    }
+    catch (error: Error | any) {
+        res.status(error?.code ?? 500).json({ message: error?.message ?? "Internal server error" });
+    }
+}
+
 export default {
     getGameById,
-    getGameRecomendations
+    getGameRecomendations,
+    getAllGames,
+    getGamesForQuizTemplate
 }

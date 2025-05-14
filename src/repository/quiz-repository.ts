@@ -7,6 +7,8 @@ const getQuizTemplate = async () => {
             question: true,
             required: true,
             tag: true,
+            min_length: true,
+            type: true, 
             options: {
                 select: {
                     answer: true,

@@ -7,6 +7,8 @@ import gamesController from "../controller/games-controller";
 
 const gamesRouter = Router();
 
+gamesRouter.get("/", gamesController.getAllGames)
+gamesRouter.get("/quiz/template", gamesController.getGamesForQuizTemplate)
 gamesRouter.get("/:id", gamesController.getGameById)
 gamesRouter.get("/recomendations", gamesController.getGameRecomendations)
 
