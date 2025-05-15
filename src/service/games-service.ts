@@ -4,9 +4,9 @@ import { Pagination } from "../types/paginator"
 import gameSuggestedService from "./game-suggested-service"
 import quizService from "./quiz-service"
 
-const getGameById = async (id: number) => {
+const getGameByGameId = async (id: number) => {
 
-    const game = await gamesRepository.getGameById(id)
+    const game = await gamesRepository.getGameByGameId(id)
     if (!game) throw new NotFound("Game not found")
 
     return game
@@ -68,7 +68,7 @@ const getGamesForQuizTemplate = async () => {
 }
 
 export default {
-    getGameById,
+    getGameByGameId,
     getGameRecomendations,
     getAllGames,
     getGamesForQuizTemplate
