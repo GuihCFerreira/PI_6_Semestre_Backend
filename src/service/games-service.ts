@@ -1,11 +1,12 @@
 import { NotFound } from "../error/not-found-error"
 import gamesRepository from "../repository/games-repository"
+import { Pagination } from "../types/paginator"
 import gameSuggestedService from "./game-suggested-service"
 import quizService from "./quiz-service"
 
-const getGameById = async (id: number) => {
+const getGameByGameId = async (id: number) => {
 
-    const game = await gamesRepository.getGameById(id)
+    const game = await gamesRepository.getGameByGameId(id)
     if (!game) throw new NotFound("Game not found")
 
     return game
@@ -34,7 +35,41 @@ const getGameRecomendations = async (userId: string) => {
 
 }
 
+const getAllGames = async (page: number = 1, perPage: number = 20) => {
+
+    const data = await gamesRepository.getAllGamesPaginate(page, perPage);
+    const total = await gamesRepository.getGamesTotal();
+    const totalPages = Math.ceil(total / perPage);
+    
+    const pagination: Pagination = {
+        currentPage: page,
+        perPage,
+        total,
+        lastPage: totalPages,
+        firstPage: 1,
+        nextPage: page < totalPages ? page + 1 : null,
+        previousPage: page > 1 ? page - 1 : null,
+    }
+
+    return {
+        data,
+        pagination
+    };
+
+}
+
+const getGamesForQuizTemplate = async () => {
+    const games = await gamesRepository.getAllGames();
+    return games.map((game) => ({
+        "answer": "Windows",
+        "value": "windows",
+        image: game.header_image
+    }))
+}
+
 export default {
-    getGameById,
-    getGameRecomendations
+    getGameByGameId,
+    getGameRecomendations,
+    getAllGames,
+    getGamesForQuizTemplate
 }

@@ -1,6 +1,11 @@
-const getGameById = async (id: number) => {
-    //TODO: Implement the logic to get a game by its ID from the python API
-    return {}
+import { db } from "../database/prisma"
+
+const getGameByGameId = async (id: number) => {
+    return db.games.findUnique({
+        where: {
+            game_id: id
+        }
+    })
 }
 
 const getGameRecomendations = async (searchData: any) => {
@@ -8,7 +13,25 @@ const getGameRecomendations = async (searchData: any) => {
     return []
 }
 
+const getAllGames = async () => {
+    return db.games.findMany({})
+}
+
+const getAllGamesPaginate = async (page: number, perPage: number) => {
+    return db.games.findMany({
+        skip: (page - 1) * perPage,
+        take: perPage
+    })
+}
+
+const getGamesTotal = async () => {
+    return db.games.count()
+}
+
 export default {
-    getGameById,
+    getGameByGameId,
     getGameRecomendations,
+    getAllGames,
+    getAllGamesPaginate,
+    getGamesTotal
 }

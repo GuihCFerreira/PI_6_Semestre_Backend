@@ -2,7 +2,7 @@ import { z } from "zod";
 import { QuizTableFields } from "../enums/quiz-enum";
 
 const baseQuizSchema = z.object({
-    FAVORITE_GAMES: z.array(z.string()).default([]),
+    FAVORITE_GAMES: z.array(z.number()).default([]),
     GENRES: z.array(z.string()).optional().default([]),
     CATEGORIES: z.array(z.string()).optional().default([]),
     OPERATIONAL_SYSTEMS: z.array(z.string()).default([]),
