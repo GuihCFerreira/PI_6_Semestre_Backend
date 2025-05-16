@@ -1,7 +1,7 @@
 import { PrismaClient, QuestionsTag, QuestionsType } from "@prisma/client";
-import fs from 'fs';
-import path from 'path';
-import csv from 'csv-parser';
+//import fs from 'fs';
+//import path from 'path';
+//import csv from 'csv-parser';
 
 const prisma = new PrismaClient();
 
@@ -220,7 +220,7 @@ async function main() {
 
         await prisma.answers.createMany({ data: aswersData });
 
-        const filePath = path.join(__dirname, './games.csv');
+        /*const filePath = path.join(__dirname, './games.csv');
         const BATCH_SIZE = 1000;
         const results: any[] = [];
 
@@ -259,7 +259,7 @@ async function main() {
                     }
                 }
                 console.timeEnd('Importação de games via CSV');
-            })
+            })*/
 
     } catch (error) {
         console.error("Error seeding database:", error);
