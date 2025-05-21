@@ -33,7 +33,12 @@ const getGamesTotal = async () => {
 const getGamesForQuizTemplate = async (page: number = 1, perPage: number = 50) => {
     return db.games.findMany({
         skip: (page - 1) * perPage,
-        take: perPage
+        take: perPage,
+        select: {
+          name: true,
+          game_id: true,
+          header_image: true
+        }
     })
 }
 
