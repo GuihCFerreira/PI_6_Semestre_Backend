@@ -30,10 +30,18 @@ const getGamesTotal = async () => {
     return db.games.count()
 }
 
+const getGamesForQuizTemplate = async (page: number = 1, perPage: number = 50) => {
+    return db.games.findMany({
+        skip: (page - 1) * perPage,
+        take: perPage
+    })
+}
+
 export default {
     getGameByGameId,
     getGameRecomendations,
     getAllGames,
     getAllGamesPaginate,
-    getGamesTotal
+    getGamesTotal,
+    getGamesForQuizTemplate
 }
