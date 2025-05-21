@@ -14,7 +14,9 @@ const getGameRecomendations = async (searchData: any) => {
 }
 
 const getAllGames = async () => {
-    return db.games.findMany({})
+    return db.games.findMany({
+        take: 10000,
+    })
 }
 
 const getAllGamesPaginate = async (page: number, perPage: number) => {
