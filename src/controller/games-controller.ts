@@ -59,7 +59,10 @@ const getAllGames = async (req: Request, res: Response) => {
 
 const getGamesForQuizTemplate = async (req: Request, res: Response) => {
     try {
-        const games = await gamesService.getGamesForQuizTemplate();
+
+        const { page = "1", perPage = "20" } = req.query;
+
+        const games = await gamesService.getGamesForQuizTemplate(parseInt(page as string, 10), parseInt(perPage as string, 10));
 
         res.status(200).json(games);
         return;
