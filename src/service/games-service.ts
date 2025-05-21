@@ -58,9 +58,10 @@ const getAllGames = async (page: number = 1, perPage: number = 20) => {
 
 }
 
-const getGamesForQuizTemplate = async (page: number = 1, perPage: number = 50) => {
+const getGamesForQuizTemplate = async (page: number = 1, perPage: number = 50, search: string = "") => {
 
-    const games = await gamesRepository.getGamesForQuizTemplate(page, perPage);
+    const orderBy = search === "" ? [{ id: "asc" }] : [{ name: "asc" }, { id: "asc" }];
+    const games = await gamesRepository.getGamesForQuizTemplate(page, perPage, search, orderBy);
     const total = await gamesRepository.getGamesTotal();
     const totalPages = Math.ceil(total / perPage);
     

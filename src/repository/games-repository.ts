@@ -30,15 +30,22 @@ const getGamesTotal = async () => {
     return db.games.count()
 }
 
-const getGamesForQuizTemplate = async (page: number = 1, perPage: number = 50) => {
+const getGamesForQuizTemplate = async (page: number = 1, perPage: number = 50, search: string = "", orderBy: any = []) => {
     return db.games.findMany({
         skip: (page - 1) * perPage,
         take: perPage,
+        where: {
+            name: {
+                contains: search,
+                mode: "insensitive"
+            }
+        },
         select: {
           name: true,
           game_id: true,
           header_image: true
-        }
+        },
+        orderBy: [ ...orderBy ]
     })
 }
 

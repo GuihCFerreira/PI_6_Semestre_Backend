@@ -2,15 +2,15 @@ import { z } from "zod";
 import { QuizTableFields } from "../enums/quiz-enum";
 
 const baseQuizSchema = z.object({
-    FAVORITE_GAMES: z.array(z.number()).default([]),
-    GENRES: z.array(z.string()).optional().default([]),
-    CATEGORIES: z.array(z.string()).optional().default([]),
-    OPERATIONAL_SYSTEMS: z.array(z.string()).default([]),
-    GAME_LANGUAGE: z.string().default(""),
-    PUBLISHERS: z.array(z.string()).optional().default([]),
-    MODE: z.array(z.string()).optional().default([]),
-    STYLE: z.array(z.string()).optional().default([]),
-    CAMERA: z.array(z.string()).optional().default([]),
+    FAVORITE_GAMES: z.array(z.number()).min(3).default([]),
+    GENRES: z.array(z.string()).min(1).default([]).transform((arr) => arr.length === 1 && arr[0] === "" ? [] : arr),
+    CATEGORIES: z.array(z.string()).min(1).default([]).transform((arr) => arr.length === 1 && arr[0] === "" ? [] : arr),
+    OPERATIONAL_SYSTEMS: z.array(z.string()).min(1).default([]).transform((arr) => arr.length === 1 && arr[0] === "" ? [] : arr),
+    GAME_LANGUAGE: z.array(z.string()).min(1).default([]).transform((arr) => arr.length > 0 ? arr[0] : ""),
+    PUBLISHERS: z.array(z.string()).min(1).default([]).transform((arr) => arr.length === 1 && arr[0] === "" ? [] : arr),
+    MODE: z.array(z.string()).min(1).default([]).transform((arr) => arr.length === 1 && arr[0] === "" ? [] : arr),
+    STYLE: z.array(z.string()).min(1).default([]).transform((arr) => arr.length === 1 && arr[0] === "" ? [] : arr),
+    CAMERA: z.array(z.string()).min(1).default([]).transform((arr) => arr.length === 1 && arr[0] === "" ? [] : arr),
 })
 
 const createQuizSchema = baseQuizSchema.transform((data) => {
