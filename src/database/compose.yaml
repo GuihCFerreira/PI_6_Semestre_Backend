@@ -1,0 +1,18 @@
+name: iplay
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: iplay_postgres
+    restart: always
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=iplay
+    volumes:
+        - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

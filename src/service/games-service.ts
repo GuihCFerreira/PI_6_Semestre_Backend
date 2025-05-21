@@ -61,8 +61,8 @@ const getAllGames = async (page: number = 1, perPage: number = 20) => {
 const getGamesForQuizTemplate = async () => {
     const games = await gamesRepository.getAllGames();
     return games.map((game) => ({
-        "answer": "Windows",
-        "value": "windows",
+        answer: game.name,
+        value: game.game_id,
         image: game.header_image
     }))
 }
