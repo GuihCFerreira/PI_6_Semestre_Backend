@@ -13,8 +13,8 @@ gamesRouter.use("/play-later", playLaterGamesRouter)
 gamesRouter.use("/played", gamesPlayedRouter);
 
 gamesRouter.get("/", gamesController.getAllGames)
+gamesRouter.get("/recomendations", gamesController.getGameRecomendations)
 gamesRouter.get("/quiz/template", gamesController.getGamesForQuizTemplate)
 gamesRouter.get("/:id", gamesController.getGameByGameId)
-gamesRouter.get("/recomendations", gamesController.getGameRecomendations)
 
 export { gamesRouter };

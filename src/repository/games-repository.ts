@@ -10,7 +10,16 @@ const getGameByGameId = async (id: number) => {
 
 const getGameRecomendations = async (searchData: any) => {
     //TODO: Implement the logic to get game recommendations from the python API
-    return []
+    return db.games.findMany({
+        take: 5,
+        select: {
+          name: true,
+          game_id: true,
+          header_image: true,
+          short_description: true,
+          release_date: true
+        }
+    })
 }
 
 const getAllGames = async () => {
