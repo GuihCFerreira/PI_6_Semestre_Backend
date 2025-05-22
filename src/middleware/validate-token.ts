@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import userRepository from "../repository/user-repository";
 
 const validateToken = async (req: any, res: any, next: any) => {
   const authHeader = req.headers["authorization"];
@@ -19,9 +20,17 @@ const validateToken = async (req: any, res: any, next: any) => {
     return res.status(500).json({ error: "JWT_SECRET not found in .env file" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err: any, decoded: any) => {
+  jwt.verify(token, process.env.JWT_SECRET, async (err: any, decoded: any) => {
     if (err) {
       return res.status(401).json({ error: `Unauthorized: ${err.message}` });
+    }
+
+    const userId = decoded.userId;
+
+    const user = await userRepository.getUserById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
 
     req.userId = decoded.userId;
