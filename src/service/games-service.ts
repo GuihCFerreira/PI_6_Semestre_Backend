@@ -1,6 +1,6 @@
 import { NotFound } from "../error/not-found-error"
 import gamesRepository from "../repository/games-repository"
-import { Pagination } from "../types/paginator"
+import { Pagination } from "../types/pagination"
 import gameSuggestedService from "./game-suggested-service"
 import quizService from "./quiz-service"
 
@@ -38,8 +38,9 @@ const getGameRecomendations = async (userId: string) => {
 const getAllGames = async (page: number = 1, perPage: number = 20) => {
 
     const data = await gamesRepository.getAllGamesPaginate(page, perPage);
-    const total = await gamesRepository.getGamesTotal();
-    const totalPages = Math.ceil(total / perPage);
+    const gamesTotal = await gamesRepository.getGamesTotal();
+    const total = data.length;
+    const totalPages = Math.ceil(total === 0 ? 1 : total / perPage);
     
     const pagination: Pagination = {
         currentPage: page,
@@ -49,6 +50,7 @@ const getAllGames = async (page: number = 1, perPage: number = 20) => {
         firstPage: 1,
         nextPage: page < totalPages ? page + 1 : null,
         previousPage: page > 1 ? page - 1 : null,
+        gamesTotal
     }
 
     return {
@@ -62,9 +64,10 @@ const getGamesForQuizTemplate = async (page: number = 1, perPage: number = 50, s
 
     const orderBy = search === "" ? [{ id: "asc" }] : [{ name: "asc" }, { id: "asc" }];
     const games = await gamesRepository.getGamesForQuizTemplate(page, perPage, search, orderBy);
-    const total = await gamesRepository.getGamesTotal();
-    const totalPages = Math.ceil(total / perPage);
-    
+    const gamesTotal = await gamesRepository.getGamesTotal();
+    const total = games.length;
+    const totalPages = Math.ceil(total === 0 ? 1 : total / perPage);
+
     const pagination: Pagination = {
         currentPage: page,
         perPage,
@@ -73,6 +76,7 @@ const getGamesForQuizTemplate = async (page: number = 1, perPage: number = 50, s
         firstPage: 1,
         nextPage: page < totalPages ? page + 1 : null,
         previousPage: page > 1 ? page - 1 : null,
+        gamesTotal
     }
 
     const data = games.map((game) => ({

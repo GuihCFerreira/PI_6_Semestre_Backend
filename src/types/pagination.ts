@@ -6,4 +6,5 @@ export type Pagination = {
     firstPage: number,
     nextPage: number | null,
     previousPage: number | null,
+    gamesTotal: number
 }
