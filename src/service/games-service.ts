@@ -15,7 +15,7 @@ const getGameByGameId = async (id: number) => {
 
 const getGameRecomendations = async (userId: string) => {
 
-    /*const lastQuiz = await quizService.getLastUserQuiz(userId)
+    const lastQuiz = await quizService.getLastUserQuiz(userId)
     if (!lastQuiz) throw new NotFound("No quiz found for this user")
 
     const getGameSuggested = await gameSuggestedService.getAllGameSuggestedByQuizId(lastQuiz.id)
@@ -26,10 +26,9 @@ const getGameRecomendations = async (userId: string) => {
     const searchData = {
         suggested_games_ids: games,
         ...lastQuizCleaned
-    }*/
+    }
 
-    const recomendations = await gamesRepository.getGameRecomendations("")
-    //const recomendations = await gamesRepository.getGameRecomendations(searchData)
+    const recomendations = await gamesRepository.getGameRecomendations(searchData)
     if (!recomendations) throw new NotFound("No recomendations found")
 
     return recomendations
