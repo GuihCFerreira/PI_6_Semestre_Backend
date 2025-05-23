@@ -1,6 +1,7 @@
 import { NotFound } from "../error/not-found-error"
 import gamesRepository from "../repository/games-repository"
 import { Pagination } from "../types/pagination"
+import { SimplePagination } from "../types/simple-pagination"
 import gameSuggestedService from "./game-suggested-service"
 import quizService from "./quiz-service"
 
@@ -64,20 +65,16 @@ const getGamesForQuizTemplate = async (page: number = 1, perPage: number = 50, s
 
     const orderBy = search === "" ? [{ id: "asc" }] : [{ name: "asc" }, { id: "asc" }];
     const games = await gamesRepository.getGamesForQuizTemplate(page, perPage, search, orderBy);
-    const gamesTotal = await gamesRepository.getGamesTotal();
-    const total = games.length;
-    const totalPages = Math.ceil(total === 0 ? 1 : total / perPage);
+    const total = games.length === 0 ? 0 : games.length - 1;
 
-    const pagination: Pagination = {
+    const pagination: SimplePagination = {
         currentPage: page,
         perPage,
         total,
-        lastPage: totalPages,
-        firstPage: 1,
-        nextPage: page < totalPages ? page + 1 : null,
-        previousPage: page > 1 ? page - 1 : null,
-        gamesTotal
+        hasNextPage: games.length > perPage
     }
+
+    games.pop();
 
     const data = games.map((game) => ({
         answer: game.name,

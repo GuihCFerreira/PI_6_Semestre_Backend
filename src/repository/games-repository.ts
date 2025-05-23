@@ -42,7 +42,7 @@ const getGamesTotal = async () => {
 const getGamesForQuizTemplate = async (page: number = 1, perPage: number = 50, search: string = "", orderBy: any = []) => {
     return db.games.findMany({
         skip: (page - 1) * perPage,
-        take: perPage,
+        take: perPage + 1,
         where: {
             name: {
                 contains: search,
