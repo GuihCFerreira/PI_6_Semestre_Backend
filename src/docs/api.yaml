@@ -1,0 +1,1282 @@
+openapi : 3.0.3
+
+info:
+  title: Integration Project (P.I.) API Documentation - IPlay
+  version: 1.0.0
+  contact:
+    email: guihdevtestes@gmail.com
+
+servers:
+  - url: https://iplay-dte2ffd6aghdd2cx.brazilsouth-01.azurewebsites.net
+    description: Production server
+  - url: https://pi-6-semestre-1edb53abee65.herokuapp.com
+    description: Staging server
+  - url: http://localhost:5836
+    description: Local server
+
+tags:
+  - name: Authentication
+    description: Operation for user authentication
+  - name: Quiz
+    description: Operation for quizzes
+
+  - name: Temperatures
+    description: Operation for temperature collections
+  - name: Humidities
+    description: Operation for humidity collections
+  - name: Users
+    description: Operation for user collections
+  - name: Summary
+    description: Operation for summary collection
+
+paths:
+  /summary:
+    get:
+      tags:
+        - Summary
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: date_greater
+          schema: 
+            type: string
+            format: date
+          required: true
+          description: Date to filter it or greater
+          example: 01/01/2024
+        - in: query
+          name: date_lesser
+          schema: 
+            type: string
+            format: date
+          required: true
+          description: Date to filter it or lesser
+          example: 01/01/2024
+      summary: Get static temperature and humidity summary
+      responses:
+        '200':
+          description: Get the static summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSummary'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSummaryError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserUnauthorized'    
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSummaryNotFound'
+  /temperatures:
+    get:
+      tags:
+        - Temperatures
+      summary: Gel all temperatures
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: latest
+          schema: 
+            type: boolean
+          description: If true, it will return the last measurement in a unic object
+          example: true
+      responses:
+        '200':
+          description: Retrieve all temperatures
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseTemperatures'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserUnauthorized' 
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseTemperatureNotFound'  
+  /temperatures/iot:
+    post:
+      tags:
+        - Temperatures
+      summary: Post a new temperature
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              required: ['temperature','unit_of_measurement']
+              $ref: '#/components/schemas/RequestTemperature'
+      responses:
+        '201':
+          description: Temperature created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseTemperature'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseTemperatureError'      
+  /humidities:
+    get:
+      tags:
+        - Humidities
+      summary: Gel all humidities
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: latest
+          schema: 
+            type: boolean
+          description: If true, it will return the last measurement in a unic object
+          example: true
+      responses:
+        '200':
+          description: Retrieve all humidities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseHumidities'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserUnauthorized' 
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseHumidityNotFound'  
+  /humidities/iot:
+    post:
+      tags:
+        - Humidities
+      summary: Post a new humidity
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              required: ['temperature','unit_of_measurement']
+              $ref: '#/components/schemas/RequestHumidity'
+      responses:
+        '201':
+          description: Humidity created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseHumidity'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseHumidityError'  
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Create a new user
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              required: ['email','password','name']
+              $ref: '#/components/schemas/RequestUser'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUser'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserError'
+        '409':
+          description: Conflicted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserAlreadyExists'
+
+    patch:
+      tags:
+        - Users
+      summary: Update user password
+      security:
+        - bearerAuth: []
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              required: ['email','password','new_password']
+              $ref: '#/components/schemas/RequestUserResetPassword'
+      responses:
+        '204':
+          description: User updated
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserErrorResetPassword'
+        '401':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserForbiddenPassword'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserNotFound'
+  /users/login:
+    post:
+      tags:
+        - Users
+      summary: Login user
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              required: ['email','password']
+              $ref: '#/components/schemas/RequestUserLogin'
+      responses:
+        '200':
+          description: Login user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUser'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserErrorLogin'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserForbidden'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserNotFound'
+
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              required: ['email','password']
+              $ref: '#/components/schemas/RequestLogin'
+      responses:
+        '200':
+          description: User logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserAuthenticated'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorLoginEmptyBody'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorInvalidPassword'           
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserNotFound'                  
+  /sign-in:
+    post:
+      tags:
+        - Authentication
+      summary: Create a new user
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              required: ['email','password','name']
+              $ref: '#/components/schemas/RequestSignIn'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserAuthenticated'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorSignInEmptyBody'
+        '409':
+          description: Conflicted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserAlreadyExists'
+
+  /quiz/template:
+    get:
+      tags:
+        - Quiz
+      summary: Get quiz template
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get quiz template
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseQuizTemplate' 
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUserNotFound'                           
+  /quiz:
+    get:
+      tags:
+        - Quiz
+      summary: Get all quizzes
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get all quizzes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAllQuizzes'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserNotFound'
+
+    post:
+      tags:
+        - Quiz
+      summary: Create a new quiz
+      security:
+        - bearerAuth: []
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestQuiz'
+      responses:
+        '201':
+          description: Quiz created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseBaseQuiz'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorZodValidation'
+                  - $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserNotFound'
+  /quiz/{id}:
+    get:
+      tags:
+        - Quiz
+      summary: Get quiz by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Get quiz by ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseBaseQuiz'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'            
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorQuizNotFound'
+
+    delete:
+      tags:
+        - Quiz
+      summary: Delete quiz by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Quiz deleted successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorQuizNotFound'
+
+    patch:
+      tags:
+        - Quiz
+      summary: Update quiz by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestQuiz'      
+      responses:
+        '200':
+          description: Quiz updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseBaseQuiz'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorZodValidation'   
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'  
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorQuizNotFound'                            
+  /quiz/user:
+    get:
+      tags:
+        - Quiz
+      summary: Get all quizzes by user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get all quizzes by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAllQuizzes'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'         
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserNotFound'
+  /quiz/user/history:
+    get:
+      tags:
+        - Quiz
+      summary: Get all quizzes history by user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get all quizzes history by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAllQuizzes'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'         
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserNotFound'
+  /quiz/user/last:
+    get:
+      tags:
+        - Quiz
+      summary: Get last quiz by user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get last quiz by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseBaseQuiz'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'        
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorQuizNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+
+components:
+  schemas:
+
+    ResponseErrorTokenNotProvided:
+      type: object
+      properties:
+        message:
+          type: string
+          default: No token provided or invalid format  
+    ResponseErrorIdParamNotProvided:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Invalid ID. ID is required on query    
+    ResponseErrorIdParamInvalidFormat:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Invalid ID. ID must be a valid cuid (25 alphanumeric characters)   
+    ResponseErrorUserIdNotFoundInToken:
+      type: object
+      properties:
+        message:
+          type: string
+          default: User ID is required         
+    ResponseErrorZodValidation:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            name:
+              type: string
+              default: ZodError
+            issues:
+              type: array
+              items:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    default: invalid_type
+                  expected:
+                    type: string
+                    default: string
+                  received:
+                    type: string
+                    default: number  
+                  message:
+                    type: string
+                    default: Expected string, received number | Array must contain at least 1 element(s)
+
+    ResponseErrorUserNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          default: User not found!
+    ResponseErrorInvalidPassword:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Invalid password!   
+    ResponseErrorLoginEmptyBody:
+      type: object
+      properties:
+        message:
+          type: string
+          default: email and password is required in body
+    RequestLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@email.com
+          description: User email
+        password:
+          type: string
+          example: '@Password123'
+          description: User password
+
+    ResponseUserAuthenticated:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Full Name User
+          description: User name
+        email:
+          type: string
+          example: user@email.com
+          description: User email
+        photo:
+          type: string
+          example: 'https://res.cloudinary.com/guih-dev/image/upload/v1747966025/IPlay/cmay3ha2i0000xduyj6vi6q8k.png'
+          description: User photo  
+        token:
+          type: string
+          example: 'dkad921jkj1jKJD9jdkj10384hdajh19283'
+          description: JWT TOKEN      
+          
+    RequestSignIn:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Full Name User
+          description: User name
+        email:
+          type: string
+          example: user@email.com
+          description: User email
+        password:
+          type: string
+          example: '@Password123'
+          description: User password
+    ResponseErrorSignInEmptyBody:
+      type: object
+      properties:
+        message:
+          type: string
+          default: email, password and name is required in body  
+    ResponseErrorUserAlreadyExists:
+      type: object
+      properties:
+        message:
+          type: string
+          default: User already exists!          
+
+    QuestionTagsEnum:
+      type: string
+      enum:
+        - FAVORITE_GAMES
+        - GENRES
+        - CATEGORIES
+        - OPERATIONAL_SYSTEMS
+        - GAME_LANGUAGE
+        - PUBLISHERS
+        - MODE
+        - STYLE
+        - CAMERA
+
+    QuestionTypeEnum:
+      type: string
+      enum:
+        - SINGLE_CHOICE
+        - MULTIPLE_CHECKBOX
+        - INPUT_CHECKBOX
+
+    ResponseQuizTemplate:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/ResponseQuizQuestion'
+          - $ref: '#/components/schemas/ResponseQuizQuestion'
+          - $ref: '#/components/schemas/ResponseQuizQuestion'
+    ResponseQuizQuestion:
+      type: object
+      properties:
+        question:
+          type: string
+          example: What is your favorite game?
+          description: Quiz question
+        min_length:
+          type: number
+          example: 1
+          description: Minimum length of the answer
+        required:
+          type: boolean
+          example: true
+          description: If the question is required  
+        tag:
+          $ref: '#/components/schemas/QuestionTagsEnum'
+        type:
+          $ref: '#/components/schemas/QuestionTypeEnum'
+        options:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/ResponseQuizAnswer'
+              - $ref: '#/components/schemas/ResponseQuizAnswer'   
+    ResponseQuizAnswer:
+      type: object
+      properties:
+        answer:
+          type: string
+          example: Answer 1
+          description: Quiz answer
+        value:
+          type: string
+          example: value 1
+          description: Quiz answer value
+
+    ResponseAllQuizzes:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/ResponseBaseQuiz'
+          - $ref: '#/components/schemas/ResponseBaseQuiz'
+          - $ref: '#/components/schemas/ResponseBaseQuiz'
+    ResponseBaseQuiz:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "762jhakjs902287j1sasfdw"
+        user_id:
+          type: string
+          example: "762jhakjs902287j1sasfdw"
+        favorite_games:
+          type: array
+          items:
+            type: integer
+          example: [578080, 488824, 292030, 2358720]
+        genres:
+          type: array
+          items:
+            type: string
+          example: ["Adventure", "Action"]
+        categories:
+          type: array
+          items:
+            type: string
+          example: []
+        operational_systems:
+          type: array
+          items:
+            type: string
+            enum: [windows, mac, linux]
+          example: ["windows"]
+        game_language:
+          type: string
+          example: "Portuguese - Brazil"
+        publishers:
+          type: array
+          items:
+            type: string
+          example: []
+        game_modes:
+          type: array
+          items:
+            type: string
+          example: ["Singleplayer | Single-player", "Co-op | Online Co-Op | Local Co-Op | Shared/Split Screen Co-op"]
+        game_styles:
+          type: array
+          items:
+            type: string
+          example: []
+        camera_perspective:
+          type: array
+          items:
+            type: string
+          example: ["Realistic | Photorealistic | 3D | Cinematic | Beautiful", "Stylized | Cartoony | Colorful | Anime | Hand-drawn | Comic Book"]
+    RequestQuiz:
+      type: object
+      properties:
+        FAVORITE_GAMES:
+          type: array
+          items:
+            type: integer
+          example: [578080, 488824, 292030, 2358720, 1174180]
+        GENRES:
+          type: array
+          items:
+            type: string
+          example: ["Adventure", "Action"]
+        CATEGORIES:
+          type: array
+          items:
+            type: string
+          example: ["Single-player", "Co-op", "PvP"]
+        PUBLISHERS:
+          type: array
+          items:
+            type: string
+          example: ["Square Enix"]
+        GAME_LANGUAGE:
+          type: array
+          items:
+            type: string
+          example: ["Portuguese - Brazil"]
+        OPERATIONAL_SYSTEMS:
+          type: array
+          items:
+            type: string
+          example: ["windows"]
+        MODE:
+          type: array
+          items:
+            type: string
+          example: ["Singleplayer | Single-player", "Co-op | Online Co-Op | Local Co-Op | Shared/Split Screen Co-op"]
+        STYLE:
+          type: array
+          items:
+            type: string
+          example: [""]
+        CAMERA:
+          type: array
+          items:
+            type: string
+          example: ["Realistic | Photorealistic | 3D | Cinematic | Beautiful", "Stylized | Cartoony | Colorful | Anime | Hand-drawn | Comic Book"]
+    ResponseErrorQuizNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Quiz not found!
+
+    ResponseSummary:
+      type: object
+      properties:
+        temperature:
+          type: object
+          properties:
+            mean:
+              type: string
+              example: 28.2
+              description: Temperature mean calculation
+            mode:
+              type: string
+              example: 28
+              description: Temperature mode calculation
+            median:
+              type: string
+              example: 28.30
+              description: Temperature median calculation
+            standard_deviation:
+              type: string
+              example: 0.95
+              description: Temperature standard deviation calculation
+            skewness:
+              type: string
+              example: 2.34
+              description: Temperature skewness calculation
+            future_prediction:
+              type: string
+              example: 27.25
+              description: Temperature future prediction calculation
+        humidity:
+          type: object
+          properties:
+            mean:
+              type: string
+              example: 28.2
+              description: Humidity mean calculation
+            mode:
+              type: string
+              example: 28
+              description: Humidity mode calculation
+            median:
+              type: string
+              example: 28.30
+              description: Humidity median calculation
+            standard_deviation:
+              type: string
+              example: 0.95
+              description: Humidity standard deviation calculation
+            skewness:
+              type: string
+              example: 2.34
+              description: Humidity skewness calculation
+            future_prediction:
+              type: string
+              example: 27.25
+              description: Humidity future prediction calculation
+    ResponseSummaryError:
+      type: object
+      properties:
+        message:
+          type: string
+          default: date_greater and date_lesser is required in query
+    ResponseSummaryNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Summary not found
+    ResponseTemperature:
+      type: object
+      properties:
+          temperature:
+            type: string
+            example: 28.2 ºC
+            description: Temperature value
+          date:
+            type: string
+            format: date
+            example: 01/01/2024
+            description: Temperature date
+          time:
+            type: string
+            example: 11:30
+            description: Temperature time
+    ResponseTemperatures:
+      type: array
+      items: 
+        $ref: '#/components/schemas/ResponseTemperature'
+    RequestTemperature:
+      type: object
+      properties:
+        temperature: 
+          type: number
+          example: 27.4
+          description: Temperature value
+        unit_of_measurement:
+          type: string
+          example: ºC
+          description: Temperature measurement unit
+    ResponseTemperatureError:
+      type: object
+      properties:
+        message:
+          type: string
+          default: temperature and unit_of_measurement is required in body
+    ResponseTemperatureNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Temperatures not found
+    ResponseHumidity:
+      type: object
+      properties:
+          humidity:
+            type: string
+            example: 74.2 %
+            description: Humidity value
+          date:
+            type: string
+            format: date
+            example: 01/01/2024
+            description: Humidity date
+          time:
+            type: string
+            example: 11:30
+            description: Humidity time
+    ResponseHumidities:
+      type: array
+      items:
+        $ref: "#/components/schemas/ResponseHumidity"
+    RequestHumidity:
+      type: object
+      properties:
+        humidity: 
+          type: number
+          example: 27.4
+          description: Humidity value
+        unit_of_measurement:
+          type: string
+          example: '%'
+          description: Humidity measurement unit
+    ResponseHumidityError:
+      type: object
+      properties:
+        message:
+          type: string
+          default: humidity and unit_of_measurement is required in body
+    ResponseHumidityNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Humidities not found
+    RequestUserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@email.com
+          description: User email
+        password:
+          type: string
+          example: '@Password123'
+          description: User password
+    RequestUser:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Full Name User
+          description: User name
+        email:
+          type: string
+          example: user@email.com
+          description: User email
+        password:
+          type: string
+          example: '@Password123'
+          description: User password
+    ResponseUser:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Full Name User
+          description: User name
+        email:
+          type: string
+          example: user@email.com
+          description: User email
+        photo:
+          type: string
+          example: 'https://res.cloudinary.com/guih-dev/image/upload/v1747966025/IPlay/cmay3ha2i0000xduyj6vi6q8k.png'
+          description: User photo  
+        token:
+          type: string
+          example: 'dkad921jkj1jKJD9jdkj10384hdajh19283'
+          description: JWT TOKEN
+    RequestUserResetPassword:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@email.com
+          description: User email
+        password:
+          type: string
+          example: '@Password123'
+          description: Current user password
+        new_password:
+          type: string
+          example: '@Password123'
+          description: User new password
+    ResponseUserNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          default: User not found with this email
+    ResponseUserAlreadyExists:
+      type: object
+      properties:
+        message:
+          type: string
+          default: There is already a user with this email
+    ResponseUserForbidden:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Wrong email or password
+    ResponseUserForbiddenPassword:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Password does not match the database
+    ResponseUserErrorResetPassword:
+      type: object
+      properties:
+        message:
+          type: string
+          default: email, password and new_password is required in body
+    ResponseUserErrorLogin:
+      type: object
+      properties:
+        message:
+          type: string
+          default: email and password is required in body
+    ResponseUserError:
+      type: object
+      properties:
+        message:
+          type: string
+          default: email, password and name is required in body
+    ResponseUserUnauthorized:
+      type: object
+      properties:
+        message: 
+          type: string
+          default: Invalid token or Missing authentication
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
