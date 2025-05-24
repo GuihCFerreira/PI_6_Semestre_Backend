@@ -7,7 +7,7 @@ const getGameByGameId = async (req: Request, res: Response) => {
         const { id } = req.params;
 
         if (!id) {
-            res.status(400).json({ message: "Game suggested ID is required" });
+            res.status(400).json({ message: "Game ID is required in query" });
             return;
         }
 

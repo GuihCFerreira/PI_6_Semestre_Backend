@@ -17,6 +17,6 @@ gamesRouter.use("/played", validateToken, gamesPlayedRouter);
 gamesRouter.get("/", validateToken, gamesController.getAllGames)
 gamesRouter.get("/recomendations", validateToken, gamesController.getGameRecomendations)
 gamesRouter.get("/quiz/template", gamesController.getGamesForQuizTemplate)
-gamesRouter.get("/:id", validateToken, verifyIdParam, gamesController.getGameByGameId)
+gamesRouter.get("/:id", validateToken, gamesController.getGameByGameId)
 
 export { gamesRouter };
