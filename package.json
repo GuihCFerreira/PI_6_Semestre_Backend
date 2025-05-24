@@ -12,7 +12,7 @@
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
     "prepare": "prisma generate",
-    "postinstall": "npx prisma db seed"
+    "postinstall": "prisma generate && npx prisma db seed"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
