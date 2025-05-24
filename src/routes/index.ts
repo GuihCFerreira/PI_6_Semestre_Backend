@@ -18,7 +18,7 @@ router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 router.use("/", authRouter);
 router.use("/user", validateToken, userRouter);
 router.use("/quiz", validateToken, quizRouter);
-router.use("/games", validateToken, gamesRouter);
+router.use("/games", gamesRouter);
 
 router.use(notFoundRoute);
 

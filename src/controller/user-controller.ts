@@ -73,9 +73,9 @@ const deleteUserImage = async (req: AuthenticatedRequest, res: Response) => {
             return
         }
 
-        const user = await userService.deleteUserImage(userId);
+        await userService.deleteUserImage(userId);
 
-        res.status(200).json(user);
+        res.status(204);
         return
 
     } catch (error: Error | any) {

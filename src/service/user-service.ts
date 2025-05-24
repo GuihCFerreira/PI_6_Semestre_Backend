@@ -1,3 +1,4 @@
+import { Conflict } from "../error/conflict-error"
 import { NotFound } from "../error/not-found-error"
 import userRepository from "../repository/user-repository"
 
@@ -29,7 +30,7 @@ const deleteUserImage = async (userId: string) => {
     const user = await userRepository.getUserById(userId)
     if (!user) throw new NotFound("User not found")
 
-    if (!user.photo_id) throw new Error("User does not have an image")
+    if (!user.photo_id) throw new Conflict("User does not have an image")
 
     const deletedImage = await userRepository.deleteImageFromCloudinary(user.photo_id)
     if (!deletedImage) throw new Error("Error deleting image from cloudinary")
