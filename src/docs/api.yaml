@@ -25,6 +25,14 @@ tags:
     description: Operation for quizzes
   - name: Games
     description: Operation for games
+  - name: Favorite Games
+    description: Operation for favorite games  
+  - name: Played Games
+    description: Operation for played games
+  - name: Play Later Games
+    description: Operation for play later games
+  - name: Suggested Games
+    description: Operation for suggested games
 
 paths:
 
@@ -760,6 +768,786 @@ paths:
                   - $ref: '#/components/schemas/ResponseErrorQuizNotFound'
                   - $ref: '#/components/schemas/ResponseErrorNoQuizzesFoundForUser'
 
+  /games/favorite:
+    get:
+      tags:
+        - Favorite Games
+      summary: Get all favorite games by user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get all favorite games by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAllFavoriteGames'
+                
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'         
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+
+    post:
+      tags:
+        - Favorite Games
+      summary: Add a game to favorite games by user
+      security:
+        - bearerAuth: []
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestFavoriteGame'
+      responses:
+        '201':
+          description: Game added to favorite games successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseFavoriteGame'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorZodValidation'
+                  - $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'  
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserNotFound'             
+  /games/favorite/{id}:
+    get:
+      tags:
+        - Favorite Games
+      summary: Get favorite game by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get favorite game by ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseFavoriteGame'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+                  - $ref: '#/components/schemas/ResponseErrorFavoriteGameIdNotProvided'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorFavoriteGameNotFound'
+
+    delete:
+      tags:
+        - Favorite Games
+      summary: Remove a game from favorite games by user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Game removed from favorite games successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+                  - $ref: '#/components/schemas/ResponseErrorFavoriteGameIdNotProvided'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorFavoriteGameNotFound'
+
+  /games/played:
+    get:
+      tags:
+        - Played Games
+      summary: Get all played games by user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get all played games by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAllPlayedGames'
+
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'         
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+
+    post:
+      tags:
+        - Played Games
+      summary: Add a game to played games by user
+      security:
+        - bearerAuth: []
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPlayedGame'
+      responses:
+        '201':
+          description: Game added to played games successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePlayedGame'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorZodValidation'
+                  - $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'  
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserNotFound'             
+  /games/played/{id}:
+    get:
+      tags:
+        - Played Games
+      summary: Get played game by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get favorite game by ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePlayedGame'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+                  - $ref: '#/components/schemas/ResponseErrorPlayedGameIdNotProvided'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorPlayedGameNotFound'
+
+    delete:
+      tags:
+        - Played Games
+      summary: Remove a game from played games by user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Game removed from played games successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+                  - $ref: '#/components/schemas/ResponseErrorPlayedGameIdNotProvided'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorPlayedGameNotFound'
+
+  /games/play-later:
+    get:
+      tags:
+        - Play Later Games
+      summary: Get all play later games by user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get all play later games by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAllPlayLaterGames'
+
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'         
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+
+    post:
+      tags:
+        - Play Later Games
+      summary: Add a game to play later games by user
+      security:
+        - bearerAuth: []
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPlayLaterGame'
+      responses:
+        '201':
+          description: Game added to play later games successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePlayLaterGame'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorZodValidation'
+                  - $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'  
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserNotFound'             
+  /games/play-later/{id}:
+    get:
+      tags:
+        - Play Later Games
+      summary: Get play later game by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get favorite game by ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePlayLaterGame'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+                  - $ref: '#/components/schemas/ResponseErrorPlayLaterGameIdNotProvided'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorPlayLaterGameNotFound'
+
+    delete:
+      tags:
+        - Play Later Games
+      summary: Remove a game from play later games by user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Game removed from play later games successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+                  - $ref: '#/components/schemas/ResponseErrorPlayLaterGameIdNotProvided'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorPlayLaterGameNotFound'
+
+  /games/suggested:
+    get:
+      tags:
+        - Suggested Games
+      summary: Get all suggested games by user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Get all suggested games by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAllSuggestedGames'
+
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'         
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+
+    post:
+      tags:
+        - Suggested Games
+      summary: Add a game to suggested games by user
+      security:
+        - bearerAuth: []
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestSuggestedGame'
+      responses:
+        '201':
+          description: Game added to suggested games successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuggestedGame'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorZodValidation'
+                  - $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'  
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserNotFound'             
+  /games/suggested/many:
+    post:
+      tags:
+        - Suggested Games
+      summary: Add many games to suggested games by user
+      security:
+        - bearerAuth: []
+      requestBody: 
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestManySuggestedGames'
+      responses:
+        '201':
+          description: Games added to suggested games successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAllSuggestedGames'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorZodValidation'
+                  - $ref: '#/components/schemas/ResponseErrorUserIdNotFoundInToken'  
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorUserNotFound' 
+  /games/suggested/{id}:
+    get:
+      tags:
+        - Suggested Games
+      summary: Get suggested game by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get suggested game by ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuggestedGame'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+                  - $ref: '#/components/schemas/ResponseErrorSuggestedGameIdNotProvided'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorSuggestedGameNotFound'
+
+    delete:
+      tags:
+        - Suggested Games
+      summary: Remove a game from suggested games by user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Game removed from suggested games successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+                  - $ref: '#/components/schemas/ResponseErrorSuggestedGameIdNotProvided'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorSuggestedGameNotFound'
+  /games/suggested/games/{id}:
+    get:
+      tags:
+        - Suggested Games
+      summary: Get suggested game by quiz ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the quiz to get suggested game
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get suggested game by quiz ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuggestedGame'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+                  - $ref: '#/components/schemas/ResponseErrorSuggestedGameQuizIdNotProvided'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorQuizNotFound'
+
+    delete:
+      tags:
+        - Suggested Games
+      summary: Delete all suggested games by quiz ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: All suggested games deleted successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                oneOf: 
+                  - $ref: '#/components/schemas/ResponseErrorIdParamNotProvided'
+                  - $ref: '#/components/schemas/ResponseErrorIdParamInvalidFormat'    
+                  - $ref: '#/components/schemas/ResponseErrorSuggestedGameQuizIdNotProvided'    
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorTokenNotProvided'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorUserNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorQuizNotFound'
+
 components:
   schemas:
 
@@ -1343,6 +2131,366 @@ components:
               - $ref: '#/components/schemas/ResponseGameComplete'
               - $ref: '#/components/schemas/ResponseGameComplete'
               - $ref: '#/components/schemas/ResponseGameComplete'
+  
+    RequestPlayLaterGame:
+      type: object
+      properties:  
+        name:
+          type: string
+          example: Counter-Strike 2
+          description: Game name
+        game_id:
+          type: integer
+          example: 730
+          description: Game ID (That's not the item id, it's game ID used by Steam)
+        header_image:
+          type: string
+          format: uri
+          example: https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg?t=1729703045
+          description: Game header image
+        short_description:
+          type: string
+          example: For over two decades, Counter-Strike has offered an elite competitive experience...
+          description: Game short description
+        release_date:
+          type: string
+          format: date
+          example: 2012-08-21
+          description: Game release date
+    ResponsePlayLaterGame:
+      type: object
+      properties:
+        id:
+            type: string
+            example: "762jhakjs902287j1sasfdw"
+            description: Game ID in the database
+        user_id:
+          type: string
+          example: "762jhakjs902287j1sasfdw"  
+          description: User ID
+        name:
+          type: string
+          example: Counter-Strike 2
+          description: Game name
+        game_id:
+          type: integer
+          example: 730
+          description: Game ID (That's not the item id, it's game ID used by Steam)
+        header_image:
+          type: string
+          format: uri
+          example: https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg?t=1729703045
+          description: Game header image
+        short_description:
+          type: string
+          example: For over two decades, Counter-Strike has offered an elite competitive experience...
+          description: Game short description
+        release_date:
+          type: string
+          format: date
+          example: 2012-08-21
+          description: Game release date
+        added_at:
+          type: string
+          format: date-time
+          example: "2025-05-28T22:13:35.189Z"
+          description: Date and time when the game was added to the play later list 
+    ResponseAllPlayLaterGames:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/ResponsePlayLaterGame'
+          - $ref: '#/components/schemas/ResponsePlayLaterGame'
+          - $ref: '#/components/schemas/ResponsePlayLaterGame'
+    ResponseErrorPlayLaterGameNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Play later game not found
+    ResponseErrorPlayLaterGameIdNotProvided:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Play later game ID is required
+
+    RequestFavoriteGame:
+      type: object
+      properties:  
+        name:
+          type: string
+          example: Counter-Strike 2
+          description: Game name
+        game_id:
+          type: integer
+          example: 730
+          description: Game ID (That's not the item id, it's game ID used by Steam)
+        header_image:
+          type: string
+          format: uri
+          example: https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg?t=1729703045
+          description: Game header image
+        short_description:
+          type: string
+          example: For over two decades, Counter-Strike has offered an elite competitive experience...
+          description: Game short description
+        release_date:
+          type: string
+          format: date
+          example: 2012-08-21
+          description: Game release date
+    ResponseFavoriteGame:
+      type: object
+      properties:
+        id:
+            type: string
+            example: "762jhakjs902287j1sasfdw"
+            description: Game ID in the database
+        user_id:
+          type: string
+          example: "762jhakjs902287j1sasfdw"
+          description: User ID
+        name:
+          type: string
+          example: Counter-Strike 2
+          description: Game name
+        game_id:
+          type: integer
+          example: 730
+          description: Game ID (That's not the item id, it's game ID used by Steam)
+        header_image:
+          type: string
+          format: uri
+          example: https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg?t=1729703045
+          description: Game header image
+        short_description:
+          type: string
+          example: For over two decades, Counter-Strike has offered an elite competitive experience...
+          description: Game short description
+        release_date:
+          type: string
+          format: date
+          example: 2012-08-21
+          description: Game release date      
+    ResponseAllFavoriteGames:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/ResponseFavoriteGame'
+          - $ref: '#/components/schemas/ResponseFavoriteGame'
+          - $ref: '#/components/schemas/ResponseFavoriteGame'
+    ResponseErrorFavoriteGameNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Played game not found
+    ResponseErrorFavoriteGameIdNotProvided:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Played game ID is required
+
+    RequestPlayedGame:
+      type: object
+      properties:  
+        name:
+          type: string
+          example: Counter-Strike 2
+          description: Game name
+        game_id:
+          type: integer
+          example: 730
+          description: Game ID (That's not the item id, it's game ID used by Steam)
+        header_image:
+          type: string
+          format: uri
+          example: https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg?t=1729703045
+          description: Game header image
+        short_description:
+          type: string
+          example: For over two decades, Counter-Strike has offered an elite competitive experience...
+          description: Game short description
+        release_date:
+          type: string
+          format: date
+          example: 2012-08-21
+          description: Game release date
+        user_rating:
+          type: integer
+          example: 5
+          description: is optional, means the user rating for the game 0 to 10, if not provided, the default value will be 5  
+        review:
+          type: string
+          example: "I really enjoyed playing this game, it was a lot of fun!"
+          description: is optional, means the user review for the game, if not provided, the default value will be an empty string  
+        played_at:
+          type: string
+          format: date
+          example: 2012-08-21
+          description: Is optional, means the date when the game was played, if not provided, the current date will be used
+    ResponsePlayedGame:
+      type: object
+      properties:
+        id:
+            type: string
+            example: "762jhakjs902287j1sasfdw"
+            description: Game ID in the database
+        user_id:
+          type: string
+          example: "762jhakjs902287j1sasfdw"  
+          description: User ID
+        name:
+          type: string
+          example: Counter-Strike 2
+          description: Game name
+        game_id:
+          type: integer
+          example: 730
+          description: Game ID (That's not the item id, it's game ID used by Steam)
+        header_image:
+          type: string
+          format: uri
+          example: https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg?t=1729703045
+          description: Game header image
+        short_description:
+          type: string
+          example: For over two decades, Counter-Strike has offered an elite competitive experience...
+          description: Game short description
+        release_date:
+          type: string
+          format: date
+          example: 2012-08-21
+          description: Game release date 
+        user_rating:
+          type: integer
+          example: 5
+          description: User rating for the game, from 0 to 10 
+        review:
+          type: string
+          example: "I really enjoyed playing this game, it was a lot of fun!"
+          description: User review for the game
+        played_at:
+          type: string
+          format: date
+          example: 2012-08-21
+          description: Date when the game was played, if not provided, the current date will be used 
+    ResponseAllPlayedGames:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/ResponsePlayedGame'
+          - $ref: '#/components/schemas/ResponsePlayedGame'
+          - $ref: '#/components/schemas/ResponsePlayedGame'
+    ResponseErrorPlayedGameNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Played game not found
+    ResponseErrorPlayedGameIdNotProvided:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Played game ID is required
+
+    RequestSuggestedGame:
+      type: object
+      properties:  
+        quiz_id:
+          type: string
+          example: "762jhakjs902287j1sasfdw" 
+          description: Quiz ID that generated the suggestion 
+        name:
+          type: string
+          example: Counter-Strike 2
+          description: Game name
+        game_id:
+          type: integer
+          example: 730
+          description: Game ID (That's not the item id, it's game ID used by Steam)
+        header_image:
+          type: string
+          format: uri
+          example: https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg?t=1729703045
+          description: Game header image
+        short_description:
+          type: string
+          example: For over two decades, Counter-Strike has offered an elite competitive experience...
+          description: Game short description
+        release_date:
+          type: string
+          format: date
+          example: 2012-08-21
+          description: Game release date
+    RequestManySuggestedGames:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/RequestSuggestedGame'
+          - $ref: '#/components/schemas/RequestSuggestedGame'
+          - $ref: '#/components/schemas/RequestSuggestedGame'
+    ResponseSuggestedGame:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "762jhakjs902287j1sasfdw"
+          description: Game ID in the database
+        quiz_id:
+          type: string
+          example: "762jhakjs902287j1sasfdw" 
+          description: Quiz ID that generated the suggestion 
+        name:
+          type: string
+          example: Counter-Strike 2
+          description: Game name
+        game_id:
+          type: integer
+          example: 730
+          description: Game ID (That's not the item id, it's game ID used by Steam)
+        header_image:
+          type: string
+          format: uri
+          example: https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg?t=1729703045
+          description: Game header image
+        short_description:
+          type: string
+          example: For over two decades, Counter-Strike has offered an elite competitive experience...
+          description: Game short description
+        release_date:
+          type: string
+          format: date
+          example: 2012-08-21
+          description: Game release date   
+    ResponseAllSuggestedGames:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/ResponseSuggestedGame'
+          - $ref: '#/components/schemas/ResponseSuggestedGame'
+          - $ref: '#/components/schemas/ResponseSuggestedGame'
+    ResponseErrorSuggestedGameNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Game suggested not found
+    ResponseErrorSuggestedGameIdNotProvided:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Game suggested ID is required
+    ResponseErrorSuggestedGameQuizIdNotProvided:
+      type: object
+      properties:
+        message:
+          type: string
+          default: Quiz ID is required
 
   securitySchemes:
     bearerAuth:
