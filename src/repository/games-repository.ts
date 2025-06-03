@@ -1,3 +1,4 @@
+import axios from "axios";
 import { db } from "../database/prisma"
 
 const getGameByGameId = async (id: number) => {
@@ -9,8 +10,26 @@ const getGameByGameId = async (id: number) => {
 }
 
 const getGameRecomendations = async (searchData: any) => {
-    //TODO: Implement the logic to get game recommendations from the python API
+    const baseUrl = process.env.PYTHON_API_URL;
+    if (!baseUrl) throw new Error("PYTHON_API_URL is not defined");
+
+    const requestOptions = {
+        headers: {
+            'Content-Type': 'application/json',
+            'timeout': 30000
+        },
+    };
+
+    const response = await axios.post(`${baseUrl}/recommend`, searchData, requestOptions)
+
+    if (!response || !response.data || !response.data.recommendation_ids) return [];
+
     return db.games.findMany({
+        where: {
+            game_id: {
+                in: response.data.recommendation_ids
+            }
+        },
         take: 5,
         select: {
           name: true,

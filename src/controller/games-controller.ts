@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import gamesService from "../service/games-service";
 import AuthenticatedRequest from "../types/authenticated-request";
+import axios from "axios";
 
 const getGameByGameId = async (req: Request, res: Response) => {
     try {
@@ -37,6 +38,10 @@ const getGameRecomendations = async (req: AuthenticatedRequest, res: Response) =
         return;
 
     } catch (error: Error | any) {
+        if (axios.isAxiosError(error)) {
+            res.status(error.response?.status ?? 500).json({ message: error.response?.data?.message ?? "Error fetching recommendations" });
+            return;
+        }
         res.status(error?.code ?? 500).json({ message: error?.message ?? "Internal server error" });
     }
 }
