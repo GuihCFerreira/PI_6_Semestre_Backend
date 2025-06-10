@@ -4,7 +4,6 @@ import { favoriteGamesRouter } from "./favorite-games-routes";
 import { playLaterGamesRouter } from "./play-later-games-routes";
 import { gamesPlayedRouter } from "./played-games-routes";
 import gamesController from "../controller/games-controller";
-import { verifyIdParam } from "../middleware/verify-id-param";
 import { validateToken } from "../middleware/validate-token";
 
 const gamesRouter = Router();

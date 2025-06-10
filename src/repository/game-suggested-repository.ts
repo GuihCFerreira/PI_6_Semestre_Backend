@@ -34,9 +34,10 @@ const createGameSuggested = async (gameSuggested: GameSuggested) => {
     })
 }
 
-const createManyGameSuggested = async (gameSuggested: GameSuggested[]) => {
+const createManyGameSuggested = async (gameSuggested: Omit<GameSuggested, "id">[]) => {
     return db.gameSuggested.createMany({
         data: gameSuggested,
+        skipDuplicates: true,
     })
 }
 

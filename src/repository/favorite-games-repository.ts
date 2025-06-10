@@ -20,6 +20,15 @@ const getFavoriteGameById = async (id: string) => {
     })
 }
 
+const getFavoriteGameByGameIdAndUserId = async (gameId: number, userId: string) => {
+    return db.favoriteGames.findFirst({
+        where: {
+            game_id: gameId,
+            user_id: userId
+        }
+    })
+}
+
 const addFavoriteGame = async (data: FavoriteGames) => {
     return db.favoriteGames.create({
         data
@@ -38,5 +47,6 @@ export default {
     getAllFavoriteGames,
     getFavoriteGameById,
     addFavoriteGame,
-    removeFavoriteGame
+    removeFavoriteGame,
+    getFavoriteGameByGameIdAndUserId
 }

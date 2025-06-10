@@ -25,7 +25,11 @@ const createGameSuggested = async (gameSuggested: GameSuggested) => {
     return gameSuggestedRepository.createGameSuggested(gameSuggested)
 }
 
-const createManyGameSuggested = async (gameSuggested: GameSuggested[]) => {
+const createManyGameSuggested = async (gameSuggested: Omit<GameSuggested, "id">[]) => {
+    return gameSuggestedRepository.createManyGameSuggested(gameSuggested)
+}
+
+const createManyGameSuggestedWithoutPassingQuizId = async (gameSuggested: GameSuggested[]) => {
     const quiz = await quizRepository.getQuizById(gameSuggested[0].quiz_id)
     if (!quiz) throw new NotFound("Quiz not found")
     return gameSuggestedRepository.createManyGameSuggested(gameSuggested)
@@ -55,6 +59,7 @@ export default {
     getAllGameSuggestedByQuizId,
     createGameSuggested,
     createManyGameSuggested,
+    createManyGameSuggestedWithoutPassingQuizId,
     updateGameSuggested,
     deleteGameSuggested,
     deleteAllGameSuggestedByQuizId,

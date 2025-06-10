@@ -3,7 +3,7 @@ import gamesService from "../service/games-service";
 import AuthenticatedRequest from "../types/authenticated-request";
 import axios from "axios";
 
-const getGameByGameId = async (req: Request, res: Response) => {
+const getGameByGameId = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { id } = req.params;
 
@@ -12,8 +12,15 @@ const getGameByGameId = async (req: Request, res: Response) => {
             return;
         }
 
+        const userId = req.userId;
+
+        if (!userId) {
+            res.status(400).json({ message: "User ID is required" });
+            return;
+        }
+
         const gameId = parseInt(id, 10) ;
-        const game = await gamesService.getGameByGameId(gameId);
+        const game = await gamesService.getGameByGameId(gameId, userId);
 
         res.status(200).json(game);
         return;

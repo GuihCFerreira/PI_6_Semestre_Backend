@@ -110,7 +110,7 @@ const createManyGameSuggested = async (req: Request, res: Response) => {
             return;
         }
 
-        const createdGameSuggested = await gameSuggestedService.createManyGameSuggested(gameSuggested);
+        const createdGameSuggested = await gameSuggestedService.createManyGameSuggestedWithoutPassingQuizId(gameSuggested);
         res.status(201).json(createdGameSuggested);
         return;
 

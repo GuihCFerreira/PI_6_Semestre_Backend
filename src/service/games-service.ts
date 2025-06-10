@@ -1,16 +1,22 @@
 import { NotFound } from "../error/not-found-error"
+import favoriteGamesRepository from "../repository/favorite-games-repository"
 import gamesRepository from "../repository/games-repository"
 import { Pagination } from "../types/pagination"
 import { SimplePagination } from "../types/simple-pagination"
 import gameSuggestedService from "./game-suggested-service"
 import quizService from "./quiz-service"
 
-const getGameByGameId = async (id: number) => {
+const getGameByGameId = async (id: number, userId: string) => {
 
     const game = await gamesRepository.getGameByGameId(id)
     if (!game) throw new NotFound("Game not found")
 
-    return game
+    const isFavorite = await favoriteGamesRepository.getFavoriteGameByGameIdAndUserId(game.game_id, userId)
+
+    return {
+        ...game,
+        is_favorite: !!isFavorite
+    }
 
 }
 
@@ -31,6 +37,19 @@ const getGameRecomendations = async (userId: string) => {
 
     const recomendations = await gamesRepository.getGameRecomendations(searchData)
     if (!recomendations) throw new NotFound("No recomendations found")
+
+    if (recomendations.length > 0) {
+        const gamesToSaveInSuggested = recomendations.map((game) => ({
+            game_id: game.game_id,
+            quiz_id: lastQuiz.id,
+            name: game.name,
+            release_date: game.release_date,
+            header_image: game.header_image,
+            short_description: game.short_description,
+            suggested_at: new Date(),
+        }));
+        gameSuggestedService.createManyGameSuggested(gamesToSaveInSuggested);
+    }
 
     return recomendations
 
