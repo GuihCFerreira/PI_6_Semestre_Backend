@@ -71,6 +71,7 @@ model GameSuggested {
   suggested_at      DateTime @default(now())
   game_id           Int
   quiz              Quizzes  @relation(fields: [quiz_id], references: [id])
+@@unique([quiz_id, game_id])
 }
 
 model FavoriteGames {

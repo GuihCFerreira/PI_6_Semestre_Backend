@@ -32,6 +32,7 @@ const getGameRecomendations = async (userId: string) => {
     
     const searchData = {
         suggested_games_ids: games,
+        played_games_ids: games,
         ...lastQuizCleaned
     }
 
