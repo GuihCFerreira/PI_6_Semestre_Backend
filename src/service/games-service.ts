@@ -30,7 +30,7 @@ const getGameRecomendations = async (userId: string, new_recomendations: boolean
     if (!new_recomendations) {
 
         const lastRecommendations = await gameSuggestedRepository.getLastFiveGameSuggestedByQuizId(lastQuiz.id)
-        if (lastRecommendations.length === 0) return getRecommendationsForUser(lastQuiz)
+        if (lastRecommendations.length === 0) return []
 
         const lasRecommendationDate = lastRecommendations[0].suggested_at
         const currentDate = new Date();
