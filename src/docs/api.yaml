@@ -732,6 +732,14 @@ paths:
       summary: Get game recomendations by last user quiz
       security:
         - bearerAuth: []
+      parameters:
+        - in: query
+          name: new_recomendations
+          description: If false, it will return the last recomendations, but if passed one day, it will return new game suggestions, if true, it will return new recomendations
+          required: true
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: Get game recomendations
@@ -855,6 +863,7 @@ paths:
         - in: path
           name: id
           required: true
+          description: Numeric Game ID 
           schema:
             type: integer
             format: int64
@@ -889,6 +898,14 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/ResponseErrorUserNotFound'
                   - $ref: '#/components/schemas/ResponseErrorFavoriteGameNotFound'
+                  - $ref: '#/components/schemas/ResponseErrorGameNotFound'
+        '409':
+          description: Cayk
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ResponseErrorFavoriteGameIsAlreadyExists'          
 
     delete:
       tags:
@@ -2020,7 +2037,6 @@ components:
           description: Game short description
         release_date:
           type: string
-          format: date
           example: 2012-08-21
           description: Game release date
         is_favorite:
@@ -2057,7 +2073,6 @@ components:
           description: Game header image
         release_date:
           type: string
-          format: date
           example: 2012-08-21
           description: Game release date
         supported_languages:
@@ -2158,7 +2173,6 @@ components:
           description: Game short description
         release_date:
           type: string
-          format: date
           example: 2012-08-21
           description: Game release date
     ResponsePlayLaterGame:
@@ -2191,7 +2205,6 @@ components:
           description: Game short description
         release_date:
           type: string
-          format: date
           example: 2012-08-21
           description: Game release date
         added_at:
@@ -2241,7 +2254,6 @@ components:
           description: Game short description
         release_date:
           type: string
-          format: date
           example: 2012-08-21
           description: Game release date
     ResponseFavoriteGame:
@@ -2274,7 +2286,6 @@ components:
           description: Game short description
         release_date:
           type: string
-          format: date
           example: 2012-08-21
           description: Game release date      
     ResponseAllFavoriteGames:
@@ -2295,7 +2306,13 @@ components:
       properties:
         message:
           type: string
-          default: Played game ID is required
+          default: Favorite game ID is required
+    ResponseErrorFavoriteGameIsAlreadyExists:
+      type: object
+      properties:
+        message:
+          type: string
+          default: This game is already in your favorites
 
     RequestPlayedGame:
       type: object
@@ -2319,7 +2336,6 @@ components:
           description: Game short description
         release_date:
           type: string
-          format: date
           example: 2012-08-21
           description: Game release date
         user_rating:
@@ -2365,7 +2381,6 @@ components:
           description: Game short description
         release_date:
           type: string
-          format: date
           example: 2012-08-21
           description: Game release date 
         user_rating:
@@ -2427,7 +2442,6 @@ components:
           description: Game short description
         release_date:
           type: string
-          format: date
           example: 2012-08-21
           description: Game release date
     RequestManySuggestedGames:
@@ -2467,7 +2481,6 @@ components:
           description: Game short description
         release_date:
           type: string
-          format: date
           example: 2012-08-21
           description: Game release date   
     ResponseAllSuggestedGames:

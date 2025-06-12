@@ -9,6 +9,6 @@ const favoriteGamesRouter = Router();
 favoriteGamesRouter.get("/", favoriteGamesController.getAllFavoriteGames);
 favoriteGamesRouter.get("/:id", verifyIdParam, favoriteGamesController.getFavoriteGameById);
 favoriteGamesRouter.post("/", validadeInput(addFavoriteGameSchema), favoriteGamesController.addFavoriteGame);
-favoriteGamesRouter.delete("/:id", verifyIdParam, favoriteGamesController.removeFavoriteGame);
+favoriteGamesRouter.delete("/:id", favoriteGamesController.removeFavoriteGame);
 
 export { favoriteGamesRouter };

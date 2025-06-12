@@ -33,13 +33,14 @@ const getGameByGameId = async (req: AuthenticatedRequest, res: Response) => {
 const getGameRecomendations = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const userId = req.userId;
+        const { new_recomendations = "false" } = req.query;
 
         if (!userId) {
             res.status(400).json({ message: "User ID is required" });
             return;
         }
 
-        const recomendations = await gamesService.getGameRecomendations(userId);
+        const recomendations = await gamesService.getGameRecomendations(userId, new_recomendations === "true");
 
         res.status(200).json(recomendations);
         return;

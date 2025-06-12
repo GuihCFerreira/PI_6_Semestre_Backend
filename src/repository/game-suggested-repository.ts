@@ -28,6 +28,26 @@ const getAllGameSuggestedByQuizId = async (quizId: string) => {
     })
 }
 
+const getLastFiveGameSuggestedByQuizId = async (quizId: string) => {
+    return db.gameSuggested.findMany({
+        where: {
+            quiz_id: quizId,
+        },
+        orderBy: {
+            id: "desc",
+        },
+        take: 5,
+        select: {
+            game_id: true,
+            suggested_at: true,
+            name: true,
+            header_image: true,
+            short_description: true,
+            release_date: true,
+        }
+    })
+}
+
 const createGameSuggested = async (gameSuggested: GameSuggested) => {
     return db.gameSuggested.create({
         data: gameSuggested,
@@ -75,4 +95,5 @@ export default {
     updateGameSuggested,
     deleteGameSuggested,
     deleteAllGameSuggestedByQuizId,
+    getLastFiveGameSuggestedByQuizId
 }

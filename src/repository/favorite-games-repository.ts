@@ -29,7 +29,7 @@ const getFavoriteGameByGameIdAndUserId = async (gameId: number, userId: string) 
     })
 }
 
-const addFavoriteGame = async (data: FavoriteGames) => {
+const addFavoriteGame = async (data: Omit<FavoriteGames, "id">) => {
     return db.favoriteGames.create({
         data
     })
@@ -43,10 +43,20 @@ const removeFavoriteGame = async (id: string) => {
     })
 }
 
+const removeFavoriteGameByGameIdAndUserId = async (gameId: number, userId: string) => {
+    return db.favoriteGames.deleteMany({
+        where: {
+            game_id: gameId,
+            user_id: userId
+        }
+    })
+}
+
 export default {
     getAllFavoriteGames,
     getFavoriteGameById,
     addFavoriteGame,
     removeFavoriteGame,
-    getFavoriteGameByGameIdAndUserId
+    getFavoriteGameByGameIdAndUserId,
+    removeFavoriteGameByGameIdAndUserId
 }

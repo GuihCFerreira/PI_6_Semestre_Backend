@@ -1,3 +1,4 @@
+import { Quizzes } from "@prisma/client"
 import { NotFound } from "../error/not-found-error"
 import favoriteGamesRepository from "../repository/favorite-games-repository"
 import gamesRepository from "../repository/games-repository"
@@ -5,6 +6,7 @@ import { Pagination } from "../types/pagination"
 import { SimplePagination } from "../types/simple-pagination"
 import gameSuggestedService from "./game-suggested-service"
 import quizService from "./quiz-service"
+import gameSuggestedRepository from "../repository/game-suggested-repository"
 
 const getGameByGameId = async (id: number, userId: string) => {
 
@@ -20,10 +22,35 @@ const getGameByGameId = async (id: number, userId: string) => {
 
 }
 
-const getGameRecomendations = async (userId: string) => {
+const getGameRecomendations = async (userId: string, new_recomendations: boolean) => {
 
     const lastQuiz = await quizService.getLastUserQuiz(userId)
     if (!lastQuiz) throw new NotFound("No quiz found for this user")
+
+    if (!new_recomendations) {
+
+        const lastRecommendations = await gameSuggestedRepository.getLastFiveGameSuggestedByQuizId(lastQuiz.id)
+        if (lastRecommendations.length === 0) return []
+
+        const lasRecommendationDate = lastRecommendations[0].suggested_at
+        const currentDate = new Date();
+
+        const isSameDay = 
+            currentDate.getDate() === lasRecommendationDate.getDate() && 
+            currentDate.getMonth() === lasRecommendationDate.getMonth() && 
+            currentDate.getFullYear() === lasRecommendationDate.getFullYear();
+
+        if (isSameDay) return lastRecommendations
+
+        return getRecommendationsForUser(lastQuiz)
+        
+    }
+
+    return getRecommendationsForUser(lastQuiz)
+
+}
+
+const getRecommendationsForUser = async (lastQuiz: Quizzes) => {
 
     const getGameSuggested = await gameSuggestedService.getAllGameSuggestedByQuizId(lastQuiz.id)
     const games = getGameSuggested.length > 0 ? getGameSuggested.map((game) => game.game_id) : [] 

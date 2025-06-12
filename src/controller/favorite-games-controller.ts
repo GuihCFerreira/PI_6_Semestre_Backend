@@ -64,16 +64,24 @@ const addFavoriteGame = async (req: AuthenticatedRequest, res: Response) => {
     }
 }
 
-const removeFavoriteGame = async (req: Request, res: Response) => {
+const removeFavoriteGame = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { id } = req.params;
+        const userId = req.userId;
 
         if (!id) {
             res.status(400).json({ message: "Favorite game ID is required" });
             return;
         }
 
-        await favoriteGamesService.removeFavoriteGame(id);
+        if (!userId) {
+            res.status(400).json({ message: "User ID is required" });
+            return;
+        }
+
+        const gameId = isNaN(Number(id)) ? 0 : parseInt(id, 10);
+
+        await favoriteGamesService.removeFavoriteGame(gameId, userId);
         res.status(204).send();
         return;
 
